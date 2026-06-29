@@ -148,7 +148,14 @@ function ci(year,month){
 function xfd(year,month){
   const i=ci(year,month);
   if(i<0)return 0;
-  return i>=COLS.length?TW:(offs[i]||0);
+  if(i>=COLS.length)return TW;
+  return offs[i]||0;
+}
+function xfdEnd(year,month){
+  const i=ci(year,month);
+  if(i<0)return 0;
+  if(i>=COLS.length)return TW;
+  return (offs[i]||0)+cw(COLS[i]);
 }
 
 
@@ -346,7 +353,7 @@ function render(){
         const sci=ci(ph.s[0],ph.s[1]);
         if(sci<0||sci>=COLS.length)return;
         const sx=xfd(ph.s[0],ph.s[1]);
-        const ey=ph.e[0]>2030?TW+YEAR_W:xfd(ph.e[0],ph.e[1]);
+        const ey=xfdEnd(ph.e[0],ph.e[1]);
         const w=Math.max(ey-sx-2,4);
 
         // Wrap positioned relative to firstCell offset
