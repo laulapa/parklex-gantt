@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Parklex · Roadmap de Innovación</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#EDECEA;color:#1a1a1a;padding:24px 28px;min-width:900px}
+h1{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#999;margin-bottom:4px}
+h2{font-size:18px;font-weight:600;color:#1a1a1a;margin-bottom:18px}
+
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border:1px solid #ccc;border-radius:8px;background:white;color:#333;font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn:hover{background:#f5f4f2}
+.btn.primary{background:#C0FA74;border-color:#90d040;color:#1a4000}
+.btn.primary:hover{background:#aae860}
+.btn.danger{color:#cc2222;border-color:#ffaaaa}
+.btn.danger:hover{background:#fff0f0}
+
+.gantt-outer{overflow-x:auto;border:1px solid #ddd;border-radius:12px;background:white;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+
+table{border-collapse:collapse;table-layout:fixed}
+thead th{font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 8px 5px;border-bottom:1px solid #ebebeb;white-space:nowrap;position:sticky;top:0;background:white;z-index:5}
+thead th.name-col{position:sticky;left:0;z-index:10;background:white;border-right:1px solid #ebebeb;text-align:left;padding-left:16px}
+thead th.zoom{background:#f7fcf0}
+thead th.year-start{border-left:2px solid #e8e5e2}
+
+.section-row td{background:#f5f4f2;padding:6px 14px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#888;border-top:1px solid #e8e5e2;border-bottom:1px solid #e8e5e2}
+
+tr.proj-row{cursor:grab}
+tr.proj-row.dragging{opacity:.4;cursor:grabbing}
+tr.proj-row.drag-over td{border-top:2px solid #9B8DE8}
+tr.proj-row td{border-bottom:1px solid #f3f2f0;vertical-align:middle;transition:background .1s}
+tr.proj-row:last-child td{border-bottom:none}
+
+td.name-col{position:sticky;left:0;z-index:2;background:white;border-right:1px solid #ebebeb;width:196px;min-width:196px;padding:0}
+td.name-col .ni{display:flex;align-items:stretch;height:100%;cursor:pointer}
+td.name-col .ni:hover .ni-content{background:#f7f6f5}
+td.name-col .stripe{width:5px;min-width:5px;flex-shrink:0;border-radius:0}
+td.name-col .stripe.qw{background:#c8973a}
+td.name-col .stripe.med{background:#7aafd4}
+td.name-col .stripe.long{background:#555452}
+td.name-col .ni-content{flex:1;padding:8px 10px}
+td.name-col .drag-handle{display:flex;align-items:center;padding:0 6px;color:#ccc;font-size:14px;cursor:grab;user-select:none}
+td.name-col .drag-handle:hover{color:#999}
+td.name-col .pname{font-size:12px;font-weight:600;color:#222;line-height:1.3}
+td.name-col .owner-pill{display:inline-block;margin-top:4px;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+td.name-col .owner-pill.lucid{background:#d4f7a0;color:#2a6000}
+td.name-col .owner-pill.parklex{background:#fff0b3;color:#7a5500}
+td.name-col .owner-pill.mix{background:#e0e8f5;color:#2a4070}
+
+td.cell{padding:3px 2px;position:relative;height:44px}
+td.cell.zoom{background:rgba(192,250,116,.05)}
+td.cell.year-start{border-left:2px solid #ebebeb}
+
+.bar{height:22px;border-radius:5px;font-size:10px;font-weight:600;display:flex;align-items:center;padding:0 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;border:none;font-family:inherit;width:100%}
+.bar.proceso{background:#E8A87C;color:#4a2500}
+.bar.solucion{background:#9B8DE8;color:#1a0060}
+.bar.proceso-light{background:rgba(232,168,124,.22);color:#9a5520;border:1px solid #E8A87C}
+.bar.solucion-light{background:rgba(155,141,232,.18);color:#4a3a9a;border:1px solid #9B8DE8}
+.bar:hover{opacity:.82}
+
+
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center}
+.modal{background:white;border:1px solid #ddd;border-radius:14px;padding:22px;width:440px;max-width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.modal h3{font-size:14px;font-weight:600;margin-bottom:16px}
+.field{margin-bottom:13px}
+.field>label{display:block;font-size:11px;color:#888;margin-bottom:4px;font-weight:500}
+.field input,.field select,.field textarea{width:100%;font-size:13px;font-family:inherit;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:white;color:#222;outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#9B8DE8;box-shadow:0 0 0 3px rgba(155,141,232,.12)}
+.field textarea{resize:vertical;height:52px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid2 label{font-size:10px;color:#aaa;display:block;margin-bottom:3px}
+
+.phase-list{border:1px solid #eee;border-radius:8px;overflow:hidden;margin-top:4px}
+.phase-item{padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.phase-item:last-child{border-bottom:none}
+.phase-item:hover{background:#faf9f8}
+.phase-dot{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:7px;vertical-align:middle}
+.phase-time{font-size:10px;color:#bbb}
+.add-ph{width:100%;padding:8px;background:#fafafa;border:none;border-top:1px solid #eee;font-size:12px;color:#888;cursor:pointer;font-family:inherit;text-align:center}
+.add-ph:hover{background:#f3f2f1;color:#555}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;border-top:1px solid #f0f0f0;padding-top:14px}
+
+.legend{display:flex;gap:16px;margin-top:14px;font-size:11px;color:#999;align-items:center;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px}
+.ld{width:13px;height:13px;border-radius:3px}
+.ld.proceso{background:#E8A87C}
+.ld.solucion{background:#9B8DE8}
+.ld.pl{background:rgba(232,168,124,.28);border:1px solid #E8A87C}
+.ld.sl{background:rgba(155,141,232,.22);border:1px solid #9B8DE8}
+.ld.today{background:#C0FA74;width:3px;height:13px;border-radius:2px}
+.ld.qw{background:#c8973a;border-radius:2px}
+.ld.med{background:#7aafd4;border-radius:2px}
+.ld.long{background:#555452;border-radius:2px}
+.ld.lucid{background:#d4f7a0;border-radius:10px}
+.ld.parklex{background:#fff0b3;border-radius:10px}
+.ld.mix{background:#e0e8f5;border-radius:10px}
+.legend-sep{width:1px;height:14px;background:#ddd}
+</style>
+</head>
+<body>
+
+<h1>Parklex Prodema · Innovation Briefing Series</h1>
+<h2>Roadmap de Innovación 2026–2030</h2>
+
+<div class="toolbar">
+  <button class="btn" onclick="addProject()">+ Añadir proyecto</button>
+  <button class="btn primary" onclick="exportCSV()">↓ Exportar CSV</button>
+</div>
+
+<div class="gantt-outer">
+  <table id="gt"></table>
+</div>
+
+<div class="legend">
+  <div class="li"><div class="ld qw"></div> Quick win &lt;8m</div>
+  <div class="li"><div class="ld med"></div> Medium 8–24m</div>
+  <div class="li"><div class="ld long"></div> Long &gt;2 años</div>
+</div>
+
+<div id="mc"></div>
+
+<script>
+const ZOOM_W=66,NORM_W=27,YEAR_W=58;
+const COLS=[
+  {id:'2026-7',l:'Jul',y:2026,z:true},{id:'2026-8',l:'Ago',y:2026,z:true},
+  {id:'2026-9',l:'Sep',y:2026,z:true},{id:'2026-10',l:'Oct',y:2026,z:true},
+  {id:'2026-11',l:'Nov',y:2026,z:true},{id:'2026-12',l:'Dic',y:2026,z:true},
+  {id:'2027-1',l:'E',y:2027},{id:'2027-2',l:'F',y:2027},{id:'2027-3',l:'M',y:2027},
+  {id:'2027-4',l:'A',y:2027},{id:'2027-5',l:'M',y:2027},{id:'2027-6',l:'J',y:2027},
+  {id:'2027-7',l:'J',y:2027},{id:'2027-8',l:'A',y:2027},{id:'2027-9',l:'S',y:2027},
+  {id:'2027-10',l:'O',y:2027},{id:'2027-11',l:'N',y:2027},{id:'2027-12',l:'D',y:2027},
+  {id:'2028',l:'2028',y:2028,yb:true},{id:'2029',l:'2029',y:2029,yb:true},{id:'2030',l:'2030',y:2030,yb:true},
+];
+function cw(c){return c.z?ZOOM_W:c.yb?YEAR_W:NORM_W}
+const offs=[];let ox=0;
+COLS.forEach(c=>{offs.push(ox);ox+=cw(c)});
+const TW=ox;
+
+function ci(year,month){
+  if(year===2026)return month-7;
+  if(year===2027)return 6+(month-1);
+  if(year>=2028)return 18+(year-2028);
+  return 0;
+}
+function xfd(year,month){
+  const i=ci(year,month);
+  if(i<0)return 0;
+  return i>=COLS.length?TW:(offs[i]||0);
+}
+
+
+let data=[
+  {id:1,sec:'proceso',name:'Parklex Radar',owner:'mix',horizon:'qw',phases:[
+    {l:'F1 · Diseño del proceso',s:[2026,7],e:[2026,8],t:'proceso'},
+    {l:'F2 · Pipeline I+D actual',s:[2026,8],e:[2026,10],t:'proceso'},
+    {l:'F3 · Cadencia regular',s:[2026,10],e:[2030,12],t:'proceso-light'},
+  ]},
+  {id:2,sec:'proceso',name:'Parklex Atalaya',owner:'lucid',horizon:'qw',phases:[
+    {l:'F1 · Diseño programa',s:[2026,7],e:[2026,8],t:'proceso'},
+    {l:'F2 · Activación: primeros sectores',s:[2026,8],e:[2026,10],t:'proceso'},
+    {l:'F3 · Cadencia trimestral',s:[2026,10],e:[2027,12],t:'proceso'},
+    {l:'Ongoing · ≥2 sectores activos',s:[2027,12],e:[2030,12],t:'proceso-light'},
+  ]},
+  {id:3,sec:'proceso',name:'Parklex Installer-Centric',owner:'lucid',horizon:'qw',phases:[
+    {l:'F1 · Panel referencia + fricciones',s:[2026,9],e:[2026,10],t:'proceso'},
+    {l:'F2 · Comunidad instaladores',s:[2026,10],e:[2026,11],t:'proceso'},
+    {l:'F3 · Co-crear: roadmap proyectos',s:[2026,11],e:[2027,6],t:'proceso'},
+    {l:'Ongoing · Insights → producto',s:[2027,6],e:[2030,12],t:'proceso-light'},
+  ]},
+  {id:4,sec:'proceso',name:'Proyecto OpenTech Lab',owner:'mix',horizon:'qw',phases:[
+    {l:'F1 · Arranque: retos y pipeline',s:[2026,9],e:[2026,11],t:'proceso'},
+    {l:'F2 · Co-desarrollo activo',s:[2026,11],e:[2027,6],t:'proceso'},
+    {l:'F3 · Escalar red colaboradores',s:[2027,6],e:[2028,6],t:'proceso'},
+    {l:'Ongoing · ≥1 mejora técnica/año',s:[2028,6],e:[2030,12],t:'proceso-light'},
+  ]},
+  {id:5,sec:'proceso',name:'Proyecto Galaxia',owner:'lucid',horizon:'qw',phases:[
+    {l:'F1 · Diseño marco alianzas',s:[2026,10],e:[2026,11],t:'proceso'},
+    {l:'F2 · MVP: primeras alianzas',s:[2026,11],e:[2026,12],t:'proceso'},
+    {l:'F3 · Ecosistema consolidado',s:[2026,12],e:[2027,9],t:'proceso'},
+    {l:'Ongoing · ≥12 alianzas',s:[2027,9],e:[2030,12],t:'proceso-light'},
+  ]},
+  {id:6,sec:'solucion',name:'Parklex Solutions',owner:'mix',horizon:'qw',phases:[
+    {l:'Discovery: qué, con quién, cómo',s:[2026,9],e:[2026,12],t:'solucion'},
+    {l:'Validación MVP + piloto',s:[2026,12],e:[2027,4],t:'solucion'},
+    {l:'Scale up & acuerdos co-branded',s:[2027,4],e:[2027,10],t:'solucion'},
+    {l:'Ampliación catálogo',s:[2027,10],e:[2030,12],t:'solucion-light'},
+  ]},
+  {id:7,sec:'solucion',name:'Asistente al Prescriptor',owner:'parklex',horizon:'qw',phases:[
+    {l:'F1 · Repositorio + arquitectura',s:[2026,9],e:[2026,10],t:'solucion'},
+    {l:'F2 · Diseño plataforma inspiración',s:[2026,10],e:[2026,11],t:'solucion'},
+    {l:'F3 · Lanzamiento MVP',s:[2026,11],e:[2027,1],t:'solucion'},
+    {l:'Continuo · Ampliación proyectos',s:[2027,1],e:[2030,12],t:'solucion-light'},
+  ]},
+  {id:8,sec:'solucion',name:'Installer Community',owner:'lucid',horizon:'qw',phases:[
+    {l:'F1 · Diseño modelo + incentivos',s:[2027,1],e:[2027,2],t:'solucion'},
+    {l:'F2 · MVP núcleo fundador',s:[2027,2],e:[2027,4],t:'solucion'},
+    {l:'F3 · Activación y captación',s:[2027,4],e:[2027,7],t:'solucion'},
+    {l:'Ongoing · Feedback → producto',s:[2027,7],e:[2030,12],t:'solucion-light'},
+  ]},
+  {id:9,sec:'solucion',name:'Asistente al Instalador',owner:'lucid',horizon:'med',phases:[
+    {l:'F1-3 · Construcción del agente IA',s:[2027,5],e:[2027,8],t:'solucion'},
+    {l:'F4 · Validación piloto interno',s:[2027,8],e:[2027,9],t:'solucion'},
+    {l:'F5 · Piloto instaladores reales',s:[2027,9],e:[2027,12],t:'solucion'},
+    {l:'Continuo · Machine learning',s:[2027,12],e:[2030,12],t:'solucion-light'},
+  ]},
+  {id:10,sec:'solucion',name:'Software C2: Categorizador + Configurador',owner:'mix',horizon:'qw',phases:[
+    {l:'F1 · Dataset + entrenamiento',s:[2026,9],e:[2026,12],t:'solucion'},
+    {l:'F2 · Integración línea (modo sombra)',s:[2026,12],e:[2027,4],t:'solucion'},
+    {l:'F3 · Validación + producción',s:[2027,4],e:[2027,9],t:'solucion'},
+    {l:'Reentrenamiento continuo',s:[2027,9],e:[2030,12],t:'solucion-light'},
+  ]},
+  {id:11,sec:'solucion',name:'Software ML Calidad',owner:'mix',horizon:'med',phases:[
+    {l:'F1 · Dataset + entrenamiento',s:[2027,1],e:[2027,3],t:'solucion'},
+    {l:'F2 · Integración en línea',s:[2027,3],e:[2027,5],t:'solucion'},
+    {l:'F3 · Validación + implementación',s:[2027,5],e:[2027,7],t:'solucion'},
+    {l:'Reentrenamiento + análisis',s:[2027,7],e:[2030,12],t:'solucion-light'},
+  ]},
+  {id:12,sec:'solucion',name:'DPP Completo',owner:'parklex',horizon:'med',phases:[
+    {l:'F1 · Mapeo regulatorio + datos',s:[2028,1],e:[2028,4],t:'solucion'},
+    {l:'F2 · Diseño plataforma DPP',s:[2028,4],e:[2028,7],t:'solucion'},
+    {l:'F3 · Primeros productos con DPP',s:[2028,7],e:[2028,12],t:'solucion'},
+    {l:'Catálogo completo trazado',s:[2028,12],e:[2030,12],t:'solucion-light'},
+  ]},
+  {id:13,sec:'solucion',name:'Telemetría Parklex en obra',owner:'mix',horizon:'long',phases:[
+    {l:'F1 · Definición técnica + sensórica',s:[2028,1],e:[2028,4],t:'solucion'},
+    {l:'F2 · Prototipo panel madre + IT',s:[2028,4],e:[2028,8],t:'solucion'},
+    {l:'F3 · Piloto en obra real',s:[2028,8],e:[2029,1],t:'solucion'},
+    {l:'Red colmena desplegada',s:[2029,1],e:[2029,9],t:'solucion'},
+    {l:'Ongoing',s:[2029,9],e:[2030,12],t:'solucion-light'},
+  ]},
+];
+let nid=20;
+
+const ownerMeta={
+  lucid:{label:'Lucid_',cls:'lucid'},
+  parklex:{label:'Parklex',cls:'parklex'},
+  mix:{label:'Mix',cls:'mix'},
+};
+
+// ── DRAG & DROP state ───────────────────────────────────────────────
+let dragSrc=null;
+
+function onDragStart(e,id){
+  dragSrc=id;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+}
+function onDragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+}
+function onDragOver(e,id){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  if(id===dragSrc)return;
+  document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
+  e.currentTarget.classList.add('drag-over');
+}
+function onDrop(e,targetId){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(dragSrc===null||dragSrc===targetId)return;
+  const srcIdx=data.findIndex(p=>p.id===dragSrc);
+  const tgtIdx=data.findIndex(p=>p.id===targetId);
+  if(srcIdx<0||tgtIdx<0)return;
+  const [moved]=data.splice(srcIdx,1);
+  const newIdx=data.findIndex(p=>p.id===targetId);
+  data.splice(newIdx,0,moved);
+  dragSrc=null;
+  render();
+}
+
+// ── RENDER ──────────────────────────────────────────────────────────
+function render(){
+  const tbl=document.getElementById('gt');
+  tbl.innerHTML='';
+
+  // thead
+  const thead=document.createElement('thead');
+  const hr=document.createElement('tr');
+  const th0=document.createElement('th');
+  th0.className='name-col';th0.style.width='196px';th0.textContent='Proyecto';
+  hr.appendChild(th0);
+  let py=null;
+  COLS.forEach(c=>{
+    const th=document.createElement('th');
+    th.style.width=cw(c)+'px';th.style.minWidth=cw(c)+'px';
+    th.className=(c.z?'zoom':'')+(c.y!==py?' year-start':'');
+    th.textContent=c.l;hr.appendChild(th);py=c.y;
+  });
+  thead.appendChild(hr);tbl.appendChild(thead);
+
+  const tbody=document.createElement('tbody');
+
+  [['proceso','PROCESO'],['solucion','SOLUCIÓN']].forEach(([key,lbl])=>{
+    // section header
+    const sr=document.createElement('tr');sr.className='section-row';
+    const std=document.createElement('td');std.colSpan=COLS.length+1;
+    std.innerHTML=`<span style="display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${key==='proceso'?'#E8A87C':'#9B8DE8'};color:white">${lbl}</span>`;
+    sr.appendChild(std);tbody.appendChild(sr);
+
+    data.filter(p=>p.sec===key).forEach(proj=>{
+      const tr=document.createElement('tr');
+      tr.className='proj-row';
+      tr.draggable=true;
+      tr.addEventListener('dragstart',e=>onDragStart(e,proj.id));
+      tr.addEventListener('dragend',e=>onDragEnd(e));
+      tr.addEventListener('dragover',e=>onDragOver(e,proj.id));
+      tr.addEventListener('drop',e=>onDrop(e,proj.id));
+
+      const om=ownerMeta[proj.owner]||ownerMeta.mix;
+      const ntd=document.createElement('td');ntd.className='name-col';
+      ntd.innerHTML=`<div class="ni" title="Clic para editar · Arrastrar para reordenar">
+        <div class="stripe ${proj.horizon||'qw'}"></div>
+        <div class="drag-handle" title="Arrastrar">⠿</div>
+        <div class="ni-content" onclick="editProj(${proj.id})">
+          <div class="pname">${proj.name}</div>
+          <span class="owner-pill ${om.cls}">${om.label}</span>
+        </div>
+      </div>`;
+      tr.appendChild(ntd);
+
+      let py2=null;
+      COLS.forEach(c=>{
+        const td=document.createElement('td');
+        td.className='cell'+(c.z?' zoom':'')+(c.y!==py2?' year-start':'');
+        td.style.position='relative';
+        tr.appendChild(td);py2=c.y;
+      });
+      tbody.appendChild(tr);
+
+      const cells=tr.querySelectorAll('td.cell');
+      // Absolute container spanning all cells — anchored to first cell
+      const firstCell=cells[0];
+      const rowContainer=document.createElement('div');
+      rowContainer.style.cssText='position:absolute;left:0;top:0;height:100%;pointer-events:none;z-index:2;';
+      firstCell.style.position='relative';
+      firstCell.appendChild(rowContainer);
+
+
+
+      proj.phases.forEach((ph,phi)=>{
+        const sci=ci(ph.s[0],ph.s[1]);
+        if(sci<0||sci>=COLS.length)return;
+        const sx=xfd(ph.s[0],ph.s[1]);
+        const ey=ph.e[0]>2030?TW+YEAR_W:xfd(ph.e[0],ph.e[1]);
+        const w=Math.max(ey-sx-2,4);
+
+        // Wrap positioned relative to firstCell offset
+        const cellOffsetX = offs[Math.min(sci,COLS.length-1)] - offs[0];
+        const wrap=document.createElement('div');
+        wrap.style.cssText=`position:absolute;left:${cellOffsetX}px;top:50%;transform:translateY(-50%);width:${w}px;z-index:2;pointer-events:all;user-select:none;`;
+        wrap.dataset.projId=proj.id;
+        wrap.dataset.phi=phi;
+
+        const bar=document.createElement('div');
+        bar.className=`bar ${ph.t}`;
+        bar.textContent=ph.l;
+        bar.style.cursor='grab';
+        bar.title='Arrastrar para mover · Borde derecho para redimensionar';
+
+        // Resize handle
+        const handle=document.createElement('div');
+        handle.style.cssText='position:absolute;right:0;top:0;bottom:0;width:8px;cursor:ew-resize;z-index:3;border-radius:0 5px 5px 0;';
+        handle.title='Arrastrar para cambiar duración';
+
+        wrap.appendChild(bar);
+        wrap.appendChild(handle);
+        rowContainer.appendChild(wrap);
+
+        // ── MOVE (drag whole bar) ──────────────────────────────────────
+        let dragType=null,startX=0,origLeft=0,origW=0;
+
+        bar.addEventListener('mousedown',e=>{
+          if(e.button!==0)return;
+          e.preventDefault();e.stopPropagation();
+          dragType='move';
+          startX=e.clientX;
+          origLeft=parseFloat(wrap.style.left);
+          origW=parseFloat(wrap.style.width);
+          bar.style.cursor='grabbing';
+          document.body.style.userSelect='none';
+          startBarDrag(e,proj.id,phi,'move',startX,origLeft,origW);
+        });
+
+        // ── RESIZE (drag right edge) ───────────────────────────────────
+        handle.addEventListener('mousedown',e=>{
+          if(e.button!==0)return;
+          e.preventDefault();e.stopPropagation();
+          startX=e.clientX;
+          origLeft=parseFloat(wrap.style.left);
+          origW=parseFloat(wrap.style.width);
+          document.body.style.userSelect='none';
+          startBarDrag(e,proj.id,phi,'resize',startX,origLeft,origW);
+        });
+
+        // Click to edit (only if didn't drag)
+        let didDrag=false;
+        wrap._setDidDrag=v=>{didDrag=v;};
+        bar.addEventListener('click',e=>{
+          if(!didDrag)editPhase(proj.id,phi);
+          didDrag=false;
+        });
+      });
+    });
+  });
+
+  tbl.appendChild(tbody);
+}
+
+// ── BAR DRAG ENGINE ─────────────────────────────────────────────────
+function startBarDrag(e,projId,phi,type,startX,origLeft,origW){
+  let moved=false;
+
+  function onMove(ev){
+    const dx=ev.clientX-startX;
+    if(Math.abs(dx)>3)moved=true;
+    if(!moved)return;
+
+    const wrap=findWrap(projId,phi);
+    if(!wrap)return;
+    const bar=wrap.querySelector('.bar');
+
+    if(type==='move'){
+      const newLeft=Math.max(0,origLeft+dx);
+      wrap.style.left=newLeft+'px';
+      bar.style.cursor='grabbing';
+      // Live tooltip
+      const [sy,sm]=xToDate(newLeft);
+      const [ey,em]=xToDate(newLeft+origW);
+      wrap.title=`${monthName(sm)} ${sy} → ${monthName(em)} ${ey}`;
+    } else {
+      const newW=Math.max(20,origW+dx);
+      wrap.style.width=newW+'px';
+    }
+  }
+
+  function onUp(ev){
+    document.removeEventListener('mousemove',onMove);
+    document.removeEventListener('mouseup',onUp);
+    document.body.style.userSelect='';
+
+    const wrap=findWrap(projId,phi);
+    if(wrap) wrap._setDidDrag&&wrap._setDidDrag(moved);
+
+    if(!moved)return;
+
+    const wrap2=findWrap(projId,phi);
+    if(!wrap2)return;
+    const left=parseFloat(wrap2.style.left);
+    const w=parseFloat(wrap2.style.width);
+
+    const p=data.find(x=>x.id===projId);
+    if(!p)return;
+    const ph=p.phases[phi];
+
+    if(type==='move'){
+      const [sy,sm]=xToDate(left);
+      const dur=durationMonths(ph.s,ph.e);
+      const [ey,em]=addMonths(sy,sm,dur);
+      ph.s=[sy,sm];ph.e=[ey,em];
+    } else {
+      const [ey,em]=xToDate(left+w);
+      ph.e=[ey,em];
+    }
+
+    const bar=wrap2.querySelector('.bar');
+    if(bar)bar.style.cursor='grab';
+    render();
+  }
+
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+}
+
+function findWrap(projId,phi){
+  const all=document.querySelectorAll('[data-proj-id]');
+  for(const el of all){
+    if(+el.dataset.projId===projId&&+el.dataset.phi===phi)return el;
+  }
+  return null;
+}
+
+// Convert absolute pixel x (relative to first timeline cell) to [year, month]
+function xToDate(x){
+  // x is relative to offs[0] start (Jul 2026)
+  let best=0;
+  for(let i=0;i<COLS.length;i++){
+    if(x>=offs[i])best=i; else break;
+  }
+  const c=COLS[best];
+  if(c.yb) return [c.y,1];
+  if(c.y===2026) return [2026,best+7];
+  if(c.y===2027) return [2027,best-6];
+  return [c.y,1];
+}
+
+function durationMonths(s,e){
+  return (e[0]-s[0])*12+(e[1]-s[1]);
+}
+function addMonths(y,m,dur){
+  let total=(y-2026)*12+(m-7)+dur;
+  // map back
+  if(total<0)total=0;
+  // reconstruct
+  const startBase=2026*12+7-1;// Jul 2026 = month 0
+  const absM=startBase+total+1;// 1-indexed month
+  const ny=Math.floor((absM-1)/12);
+  const nm=((absM-1)%12)+1;
+  return [ny,nm];
+}
+function monthName(m){
+  return['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][m]||'';
+}
+
+// ── MODALS ──────────────────────────────────────────────────────────
+function showModal(html){
+  document.getElementById('mc').innerHTML=`<div class="overlay" onclick="if(event.target===this)closeM()"><div class="modal">${html}</div></div>`;
+}
+function closeM(){document.getElementById('mc').innerHTML=''}
+
+function editProj(id){
+  const p=data.find(x=>x.id===id);
+  const ph=p.phases.map((ph,i)=>{
+    const bg=ph.t.startsWith('proceso')?'#E8A87C':'#9B8DE8';
+    const op=ph.t.includes('light')?'.5':'1';
+    return `<div class="phase-item" onclick="editPhase(${id},${i})">
+      <span><span class="phase-dot" style="background:${bg};opacity:${op}"></span>${ph.l}</span>
+      <span class="phase-time">${ph.s[0]}-${String(ph.s[1]).padStart(2,'0')} → ${ph.e[0]}-${String(ph.e[1]||12).padStart(2,'0')}</span>
+    </div>`;
+  }).join('');
+  showModal(`<h3>Editar proyecto</h3>
+    <div class="field"><label>Nombre</label><input id="epn" value="${p.name}"></div>
+    <div class="field"><label>Owner</label><select id="epo">
+      <option value="lucid" ${p.owner==='lucid'?'selected':''}>Lucid_</option>
+      <option value="parklex" ${p.owner==='parklex'?'selected':''}>Parklex</option>
+      <option value="mix" ${p.owner==='mix'?'selected':''}>Mix</option>
+    </select></div>
+    <div class="field"><label>Horizonte</label><select id="eph">
+      <option value="qw" ${(p.horizon||'qw')==='qw'?'selected':''}>Quick win (&lt;8m)</option>
+      <option value="med" ${p.horizon==='med'?'selected':''}>Medium (8–24m)</option>
+      <option value="long" ${p.horizon==='long'?'selected':''}>Long (&gt;2 años)</option>
+    </select></div>
+    <div class="field"><label>Categoría</label><select id="epk">
+      <option value="proceso" ${p.sec==='proceso'?'selected':''}>PROCESO</option>
+      <option value="solucion" ${p.sec==='solucion'?'selected':''}>SOLUCIÓN</option>
+    </select></div>
+    <div class="field"><label>Fases</label>
+      <div class="phase-list">${ph}
+        <button class="add-ph" onclick="addPhase(${id})">+ Añadir fase</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="delProj(${id})">✕ Eliminar</button>
+      <button class="btn" onclick="closeM()">Cancelar</button>
+      <button class="btn primary" onclick="saveProj(${id})">Guardar</button>
+    </div>`);
+}
+function saveProj(id){
+  const p=data.find(x=>x.id===id);
+  p.name=document.getElementById('epn').value;
+  p.owner=document.getElementById('epo').value;
+  p.horizon=document.getElementById('eph').value;
+  p.sec=document.getElementById('epk').value;
+  closeM();render();
+}
+function delProj(id){
+  if(!confirm('¿Eliminar este proyecto?'))return;
+  data=data.filter(p=>p.id!==id);closeM();render();
+}
+function addProject(){
+  const id=nid++;
+  data.push({id,sec:'proceso',name:'Nuevo proyecto',owner:'mix',horizon:'qw',
+    phases:[{l:'Fase 1',s:[2026,7],e:[2026,10],t:'proceso'}]});
+  render();editProj(id);
+}
+
+function editPhase(pid,phi){
+  const p=data.find(x=>x.id===pid);const ph=p.phases[phi];
+  showModal(`<h3>Editar fase</h3>
+    <div class="field"><label>Etiqueta</label><input id="phl" value="${ph.l}"></div>
+    <div class="field"><label>Estilo</label><select id="pht">
+      <option value="proceso" ${ph.t==='proceso'?'selected':''}>Proceso — activo</option>
+      <option value="proceso-light" ${ph.t==='proceso-light'?'selected':''}>Proceso — ongoing</option>
+      <option value="solucion" ${ph.t==='solucion'?'selected':''}>Solución — activo</option>
+      <option value="solucion-light" ${ph.t==='solucion-light'?'selected':''}>Solución — ongoing</option>
+    </select></div>
+    <div class="field"><label>Inicio</label><div class="grid2">
+      <div><label>Año</label><input type="number" id="psy" value="${ph.s[0]}" min="2026" max="2031"></div>
+      <div><label>Mes (1–12)</label><input type="number" id="psm" value="${ph.s[1]}" min="1" max="12"></div>
+    </div></div>
+    <div class="field"><label>Fin</label><div class="grid2">
+      <div><label>Año</label><input type="number" id="pey" value="${ph.e[0]}" min="2026" max="2031"></div>
+      <div><label>Mes (1–12)</label><input type="number" id="pem" value="${ph.e[1]||12}" min="1" max="12"></div>
+    </div></div>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="delPhase(${pid},${phi})">✕ Eliminar fase</button>
+      <button class="btn" onclick="editProj(${pid})">← Volver</button>
+      <button class="btn primary" onclick="savePh(${pid},${phi})">Guardar</button>
+    </div>`);
+}
+function savePh(pid,phi){
+  const p=data.find(x=>x.id===pid);
+  p.phases[phi]={
+    l:document.getElementById('phl').value,
+    t:document.getElementById('pht').value,
+    s:[+document.getElementById('psy').value,+document.getElementById('psm').value],
+    e:[+document.getElementById('pey').value,+document.getElementById('pem').value],
+  };
+  closeM();render();
+}
+function delPhase(pid,phi){
+  const p=data.find(x=>x.id===pid);p.phases.splice(phi,1);closeM();render();
+}
+function addPhase(pid){
+  const p=data.find(x=>x.id===pid);const last=p.phases[p.phases.length-1];
+  p.phases.push({
+    l:'Nueva fase',
+    s:last?[...last.e]:[2026,7],
+    e:last?[last.e[0],Math.min((last.e[1]||12)+3,12)]:[2026,10],
+    t:last?last.t:'proceso',
+  });
+  closeM();render();editPhase(pid,p.phases.length-1);
+}
+
+function exportCSV(){
+  const rows=[['Proyecto','Categoría','Owner','Horizonte','Fase','Tipo','Inicio año','Inicio mes','Fin año','Fin mes']];
+  data.forEach(p=>p.phases.forEach(ph=>rows.push([
+    p.name,p.sec,p.owner,p.horizon||'qw',ph.l,ph.t,ph.s[0],ph.s[1],ph.e[0],ph.e[1]||12
+  ])));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='parklex_roadmap.csv';a.click();
+}
+
+render();
+</script>
+</body>
+</html>
