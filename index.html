@@ -137,87 +137,93 @@ function xfd(year,month){
   const i=ci(year,month);
   if(i<0)return 0;
   if(i>=COLS.length)return TW;
+  const c=COLS[i];
+  if(c.yb){
+    // interpolate within the year block by month (1-12)
+    return (offs[i]||0) + Math.round(((month-1)/12)*cw(c));
+  }
   return offs[i]||0;
 }
 
 let data=[
-  {id:1,sec:'proceso',name:'Parklex Radar',owner:'mix',horizon:'qw',phases:[
-    {l:'F1 · Diseño del proceso',s:[2026,7],e:[2026,8],t:'proceso'},
-    {l:'F2 · Pipeline I+D actual',s:[2026,8],e:[2026,10],t:'proceso'},
-    {l:'F3 · Cadencia regular',s:[2026,10],e:[2031,1],t:'proceso-light'},
+  {id:1,sec:'proceso',name:'Radar Oportunidades',owner:'mix',horizon:'qw',phases:[
+    {l:'F1 · Diseño del proceso radar',s:[2026,7],e:[2026,9],t:'proceso'},
+    {l:'F2 · Definición herramientas trazabilidad',s:[2026,9],e:[2026,10],t:'proceso'},
+    {l:'F3 · Implementación + piloto',s:[2026,10],e:[2026,11],t:'proceso'},
+    {l:'Continuo · Revisión mensual pipeline',s:[2026,11],e:[2031,1],t:'proceso-light'},
   ]},
   {id:2,sec:'proceso',name:'Parklex Atalaya',owner:'lucid',horizon:'qw',phases:[
-    {l:'F1 · Diseño programa',s:[2026,7],e:[2026,8],t:'proceso'},
-    {l:'F2 · Activación: primeros sectores',s:[2026,8],e:[2026,10],t:'proceso'},
-    {l:'F3 · Cadencia trimestral',s:[2026,10],e:[2027,12],t:'proceso'},
-    {l:'Ongoing · ≥2 sectores activos',s:[2027,12],e:[2031,1],t:'proceso-light'},
+    {l:'F1 · Diseño programa: criterios y governance',s:[2026,7],e:[2026,8],t:'proceso'},
+    {l:'F2 · Activación de programa',s:[2026,8],e:[2026,9],t:'proceso'},
+    {l:'F3 · Implementación proceso',s:[2026,9],e:[2026,10],t:'proceso'},
+    {l:'Continuo · Cadencia trimestral',s:[2026,10],e:[2031,1],t:'proceso-light'},
   ]},
   {id:3,sec:'proceso',name:'Parklex Installer-Centric',owner:'lucid',horizon:'qw',phases:[
-    {l:'F1 · Panel referencia + fricciones',s:[2026,9],e:[2026,10],t:'proceso'},
-    {l:'F2 · Comunidad instaladores',s:[2026,10],e:[2026,11],t:'proceso'},
-    {l:'F3 · Co-crear: roadmap proyectos',s:[2026,11],e:[2027,6],t:'proceso'},
-    {l:'Ongoing · Insights → producto',s:[2027,6],e:[2031,1],t:'proceso-light'},
+    {l:'F1 · Panel referencia + fricciones mapeadas',s:[2026,9],e:[2026,10],t:'proceso'},
+    {l:'F2 · Comunidad / red instaladores',s:[2026,10],e:[2026,12],t:'proceso'},
+    {l:'F3 · Explorar y co-crear roadmap',s:[2026,12],e:[2027,1],t:'proceso'},
+    {l:'Continuo · Insights → proyectos',s:[2027,1],e:[2031,1],t:'proceso-light'},
   ]},
   {id:4,sec:'proceso',name:'Proyecto OpenTech Lab',owner:'mix',horizon:'qw',phases:[
     {l:'F1 · Arranque: retos y pipeline',s:[2026,9],e:[2026,11],t:'proceso'},
-    {l:'F2 · Co-desarrollo activo',s:[2026,11],e:[2027,6],t:'proceso'},
-    {l:'F3 · Escalar red colaboradores',s:[2027,6],e:[2028,6],t:'proceso'},
-    {l:'Ongoing · ≥1 mejora técnica/año',s:[2028,6],e:[2031,1],t:'proceso-light'},
+    {l:'F2 · Co-desarrollo activo',s:[2026,11],e:[2027,5],t:'proceso'},
+    {l:'F3 · Escalar red colaboradores',s:[2027,5],e:[2027,9],t:'proceso'},
+    {l:'Ongoing · ≥1 mejora técnica/año',s:[2027,9],e:[2031,1],t:'proceso-light'},
   ]},
   {id:5,sec:'proceso',name:'Proyecto Galaxia',owner:'lucid',horizon:'qw',phases:[
-    {l:'F1 · Diseño marco alianzas',s:[2026,10],e:[2026,11],t:'proceso'},
-    {l:'F2 · MVP: primeras alianzas',s:[2026,11],e:[2026,12],t:'proceso'},
-    {l:'F3 · Ecosistema consolidado',s:[2026,12],e:[2027,9],t:'proceso'},
-    {l:'Ongoing · ≥12 alianzas',s:[2027,9],e:[2031,1],t:'proceso-light'},
+    {l:'F1 · Diseño marco colaboraciones',s:[2026,10],e:[2026,11],t:'proceso'},
+    {l:'F2 · Sesión diseño del proceso',s:[2026,11],e:[2026,12],t:'proceso'},
+    {l:'F3 · MVP: activación primeras alianzas',s:[2026,12],e:[2027,1],t:'proceso'},
+    {l:'F4 · Validación ecosistema consolidado',s:[2027,1],e:[2027,2],t:'proceso'},
+    {l:'Continuo · Alianzas activas por ámbito',s:[2027,2],e:[2031,1],t:'proceso-light'},
   ]},
   {id:6,sec:'solucion',name:'Parklex Solutions',owner:'mix',horizon:'qw',phases:[
     {l:'Discovery: qué, con quién, cómo',s:[2026,9],e:[2026,12],t:'solucion'},
     {l:'Validación MVP + piloto',s:[2026,12],e:[2027,4],t:'solucion'},
     {l:'Scale up & acuerdos co-branded',s:[2027,4],e:[2027,10],t:'solucion'},
-    {l:'Ampliación catálogo',s:[2027,10],e:[2031,1],t:'solucion-light'},
+    {l:'Continuo · Ampliación catálogo',s:[2027,10],e:[2031,1],t:'solucion-light'},
   ]},
-  {id:7,sec:'solucion',name:'Asistente al Prescriptor',owner:'parklex',horizon:'qw',phases:[
-    {l:'F1 · Repositorio + arquitectura',s:[2026,9],e:[2026,10],t:'solucion'},
-    {l:'F2 · Diseño plataforma inspiración',s:[2026,10],e:[2026,11],t:'solucion'},
-    {l:'F3 · Lanzamiento MVP',s:[2026,11],e:[2027,1],t:'solucion'},
+  {id:7,sec:'solucion',name:'D2A: Asistente prescriptor',owner:'parklex',horizon:'qw',phases:[
+    {l:'F1 · Gestión repositorio técnico',s:[2026,9],e:[2026,10],t:'solucion'},
+    {l:'F2 · Diseño plataforma + arquitectura',s:[2026,10],e:[2026,11],t:'solucion'},
+    {l:'F3 · Lanzamiento a prescriptores clave',s:[2026,11],e:[2027,1],t:'solucion'},
     {l:'Continuo · Ampliación proyectos',s:[2027,1],e:[2031,1],t:'solucion-light'},
   ]},
-  {id:8,sec:'solucion',name:'Installer Community',owner:'lucid',horizon:'qw',phases:[
-    {l:'F1 · Diseño modelo + incentivos',s:[2027,1],e:[2027,2],t:'solucion'},
-    {l:'F2 · MVP núcleo fundador',s:[2027,2],e:[2027,4],t:'solucion'},
-    {l:'F3 · Activación y captación',s:[2027,4],e:[2027,7],t:'solucion'},
-    {l:'Ongoing · Feedback → producto',s:[2027,7],e:[2031,1],t:'solucion-light'},
+  {id:8,sec:'solucion',name:'Panel ID',owner:'mix',horizon:'med',phases:[
+    {l:'F1 · Criterios categorización + dataset',s:[2026,9],e:[2026,12],t:'solucion'},
+    {l:'F2 · Modelo categorización + configuración',s:[2026,12],e:[2027,5],t:'solucion'},
+    {l:'F3 · Validación + implementación producción',s:[2027,5],e:[2027,7],t:'solucion'},
+    {l:'Continuo · Reentrenamiento',s:[2027,7],e:[2031,1],t:'solucion-light'},
   ]},
-  {id:9,sec:'solucion',name:'Asistente al Instalador',owner:'lucid',horizon:'med',phases:[
-    {l:'F1-3 · Construcción del agente IA',s:[2027,5],e:[2027,8],t:'solucion'},
-    {l:'F4 · Validación piloto interno',s:[2027,8],e:[2027,9],t:'solucion'},
-    {l:'F5 · Piloto instaladores reales',s:[2027,9],e:[2027,12],t:'solucion'},
-    {l:'Continuo · Machine learning',s:[2027,12],e:[2031,1],t:'solucion-light'},
+  {id:9,sec:'solucion',name:'Installer Community',owner:'lucid',horizon:'med',phases:[
+    {l:'F1 · Diseño modelo + plan incentivos',s:[2027,1],e:[2027,2],t:'solucion'},
+    {l:'F2 · Núcleo fundador instaladores + MVP',s:[2027,2],e:[2027,3],t:'solucion'},
+    {l:'F3 · Activación y captación',s:[2027,3],e:[2027,4],t:'solucion'},
+    {l:'Continuo · Escalado + feedback',s:[2027,4],e:[2031,1],t:'solucion-light'},
   ]},
-  {id:10,sec:'solucion',name:'Software C2: Categorizador + Configurador',owner:'mix',horizon:'qw',phases:[
-    {l:'F1 · Dataset + entrenamiento',s:[2026,9],e:[2026,12],t:'solucion'},
-    {l:'F2 · Integración línea (modo sombra)',s:[2026,12],e:[2027,4],t:'solucion'},
-    {l:'F3 · Validación + producción',s:[2027,4],e:[2027,9],t:'solucion'},
-    {l:'Reentrenamiento continuo',s:[2027,9],e:[2031,1],t:'solucion-light'},
+  {id:10,sec:'solucion',name:'Software ML Calidad',owner:'mix',horizon:'med',phases:[
+    {l:'F1 · Dataset + entrenamiento inicial',s:[2027,1],e:[2027,4],t:'solucion'},
+    {l:'F2 · Integración en línea (modo sombra)',s:[2027,4],e:[2027,7],t:'solucion'},
+    {l:'F3 · Validación + implementación',s:[2027,7],e:[2028,1],t:'solucion'},
+    {l:'Continuo · Reentrenamiento + análisis',s:[2028,1],e:[2031,1],t:'solucion-light'},
   ]},
-  {id:11,sec:'solucion',name:'Software ML Calidad',owner:'mix',horizon:'med',phases:[
-    {l:'F1 · Dataset + entrenamiento',s:[2027,1],e:[2027,3],t:'solucion'},
-    {l:'F2 · Integración en línea',s:[2027,3],e:[2027,5],t:'solucion'},
-    {l:'F3 · Validación + implementación',s:[2027,5],e:[2027,7],t:'solucion'},
-    {l:'Reentrenamiento + análisis',s:[2027,7],e:[2031,1],t:'solucion-light'},
+  {id:11,sec:'solucion',name:'Asistente al Instalador',owner:'lucid',horizon:'med',phases:[
+    {l:'F1 · Research installer centric',s:[2027,5],e:[2027,7],t:'solucion'},
+    {l:'F2 · Diseño y desarrollo del asistente',s:[2027,7],e:[2027,11],t:'solucion'},
+    {l:'F3 · Piloto instaladores reales',s:[2027,11],e:[2028,2],t:'solucion'},
+    {l:'Continuo · Mejora basada en uso real',s:[2028,2],e:[2031,1],t:'solucion-light'},
   ]},
   {id:12,sec:'solucion',name:'DPP Completo',owner:'parklex',horizon:'med',phases:[
-    {l:'F1 · Mapeo regulatorio + datos',s:[2028,1],e:[2028,4],t:'solucion'},
-    {l:'F2 · Diseño plataforma DPP',s:[2028,4],e:[2028,7],t:'solucion'},
-    {l:'F3 · Primeros productos con DPP',s:[2028,7],e:[2028,12],t:'solucion'},
-    {l:'Catálogo completo trazado',s:[2028,12],e:[2031,1],t:'solucion-light'},
+    {l:'F1 · Mapeo regulatorio + datos origen',s:[2027,9],e:[2027,12],t:'solucion'},
+    {l:'F2 · Diseño plataforma DPP',s:[2027,12],e:[2028,2],t:'solucion'},
+    {l:'F3 · Lanzamiento primeros productos',s:[2028,2],e:[2028,3],t:'solucion'},
+    {l:'Continuo · Catálogo completo con DPP',s:[2028,3],e:[2031,1],t:'solucion-light'},
   ]},
-  {id:13,sec:'solucion',name:'Telemetría Parklex en obra',owner:'mix',horizon:'long',phases:[
+  {id:13,sec:'solucion',name:'IoF · Intelligence of Façades',owner:'mix',horizon:'long',phases:[
     {l:'F1 · Definición técnica + sensórica',s:[2028,1],e:[2028,4],t:'solucion'},
-    {l:'F2 · Prototipo panel madre + IT',s:[2028,4],e:[2028,8],t:'solucion'},
-    {l:'F3 · Piloto en obra real',s:[2028,8],e:[2029,1],t:'solucion'},
-    {l:'Red colmena desplegada',s:[2029,1],e:[2029,9],t:'solucion'},
-    {l:'Ongoing',s:[2029,9],e:[2031,1],t:'solucion-light'},
+    {l:'F2 · Prototipo panel madre + capa IT',s:[2028,4],e:[2028,7],t:'solucion'},
+    {l:'F3 · Despliegue piloto en obra real',s:[2028,7],e:[2029,1],t:'solucion'},
+    {l:'Continuo · Red colmena desplegada',s:[2029,1],e:[2031,1],t:'solucion-light'},
   ]},
 ];
 let nid=20;
@@ -298,26 +304,27 @@ function render(){
 
       const cells=tr.querySelectorAll('td.cell');
 
+      // Single absolute container anchored to first cell, spanning full timeline width
+      const firstCell=cells[0];
+      const rowCanvas=document.createElement('div');
+      rowCanvas.style.cssText=`position:absolute;left:0;top:0;width:${TW}px;height:100%;pointer-events:none;z-index:2;`;
+      firstCell.appendChild(rowCanvas);
+
       proj.phases.forEach((ph,phi)=>{
         const sci=ci(ph.s[0],ph.s[1]);
         if(sci<0||sci>=COLS.length)return;
 
-        // start pixel (absolute from timeline origin)
-        const sx=xfd(ph.s[0],ph.s[1]);
-        // end pixel: if end col exists use its right edge, else TW
+        // All positions relative to timeline origin (offs[0])
+        const sx=xfd(ph.s[0],ph.s[1]) - offs[0];
         const eci=ci(ph.e[0],ph.e[1]);
-        const ey=eci>=COLS.length ? TW : xfd(ph.e[0],ph.e[1]);
-
-        // bar is placed inside the cell where it starts
-        const cellX=offs[sci];
-        const barLeft=sx-cellX+1;
+        const rawEy=eci>=COLS.length ? TW : xfd(ph.e[0],ph.e[1]);
+        const ey=rawEy - offs[0];
         const barW=Math.max(ey-sx-3,4);
 
-        const cell=cells[Math.min(sci,cells.length-1)];
         const wrap=document.createElement('div');
         wrap.dataset.projId=proj.id;
         wrap.dataset.phi=phi;
-        wrap.style.cssText=`position:absolute;left:${barLeft}px;top:50%;transform:translateY(-50%);width:${barW}px;z-index:2;pointer-events:all;user-select:none;`;
+        wrap.style.cssText=`position:absolute;left:${sx+1}px;top:50%;transform:translateY(-50%);width:${barW}px;pointer-events:all;user-select:none;`;
 
         const bar=document.createElement('div');
         bar.className=`bar ${ph.t}`;
@@ -327,7 +334,7 @@ function render(){
         const handle=document.createElement('div');
         handle.style.cssText='position:absolute;right:0;top:0;bottom:0;width:8px;cursor:ew-resize;z-index:3;border-radius:0 5px 5px 0;';
 
-        wrap.appendChild(bar);wrap.appendChild(handle);cell.appendChild(wrap);
+        wrap.appendChild(bar);wrap.appendChild(handle);rowCanvas.appendChild(wrap);
 
         // ── MOVE ────────────────────────────────────────────────────
         let didDrag=false;
@@ -346,14 +353,13 @@ function render(){
             if(!didDrag)return;
             wrap.style.left=Math.max(0,origLeft+dx)+'px';
           }
-          function onUp(ev){
+          function onUp(){
             document.removeEventListener('mousemove',onMove);
             document.removeEventListener('mouseup',onUp);
             document.body.style.userSelect='';
             bar.style.cursor='grab';
             if(!didDrag)return;
-            const newLeft=parseFloat(wrap.style.left);
-            const absSx=cellX+newLeft;
+            const absSx=parseFloat(wrap.style.left)+offs[0];
             const [sy,sm]=xToDate(absSx);
             const dur=durationMonths(ph.s,ph.e);
             const [ey2,em2]=addMonths(sy,sm,dur);
@@ -373,15 +379,13 @@ function render(){
           const origW=parseFloat(wrap.style.width);
           document.body.style.userSelect='none';
           function onMove(ev){
-            const dx=ev.clientX-startX;
-            wrap.style.width=Math.max(20,origW+dx)+'px';
+            wrap.style.width=Math.max(20,origW+(ev.clientX-startX))+'px';
           }
           function onUp(){
             document.removeEventListener('mousemove',onMove);
             document.removeEventListener('mouseup',onUp);
             document.body.style.userSelect='';
-            const newW=parseFloat(wrap.style.width);
-            const absEx=cellX+parseFloat(wrap.style.left)+newW;
+            const absEx=parseFloat(wrap.style.left)+parseFloat(wrap.style.width)+offs[0];
             const [ey2,em2]=xToDate(absEx);
             ph.e=[ey2,em2];
             render();
