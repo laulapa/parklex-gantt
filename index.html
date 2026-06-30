@@ -5,7 +5,7 @@
 <title>Parklex · Roadmap de Innovación</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#EDECEA;color:#1a1a1a;padding:24px 28px;min-width:900px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#EDECEA;color:#1a1a1a;padding:16px 20px;width:1550px;min-height:650px}
 h1{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#999;margin-bottom:4px}
 h2{font-size:18px;font-weight:600;color:#1a1a1a;margin-bottom:18px}
 
@@ -49,7 +49,7 @@ td.name-col .owner-pill.lucid{background:#d4f7a0;color:#2a6000}
 td.name-col .owner-pill.parklex{background:#fff0b3;color:#7a5500}
 td.name-col .owner-pill.mix{background:#e0e8f5;color:#2a4070}
 
-td.cell{padding:3px 2px;position:relative;height:44px}
+td.cell{padding:2px 2px;position:relative;height:35px}
 td.cell.zoom{background:rgba(192,250,116,.05)}
 td.cell.year-start{border-left:2px solid #ebebeb}
 
@@ -95,7 +95,7 @@ td.cell.year-start{border-left:2px solid #ebebeb}
 
 <div class="toolbar">
   <button class="btn" onclick="addProject()">+ Añadir proyecto</button>
-  <button class="btn primary" onclick="exportCSV()">↓ Exportar CSV</button>
+  
 </div>
 
 <div class="gantt-outer">
@@ -111,7 +111,7 @@ td.cell.year-start{border-left:2px solid #ebebeb}
 <div id="mc"></div>
 
 <script>
-const ZOOM_W=66,NORM_W=27,YEAR_W=58;
+const ZOOM_W=97,NORM_W=38,YEAR_W=83;
 const COLS=[
   {id:'2026-7',l:'Jul',y:2026,z:true},{id:'2026-8',l:'Ago',y:2026,z:true},
   {id:'2026-9',l:'Sep',y:2026,z:true},{id:'2026-10',l:'Oct',y:2026,z:true},
